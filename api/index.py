@@ -91,7 +91,6 @@ async def writeResponseBody(req,body):
   await promise(atimeout,[req,1])
   await astart()
   try:
-    #print('Ending '+req.headers['Host']+req.path)
     return req.wfile.write(body)
   except:
     return
@@ -112,7 +111,6 @@ async def streamDetach(stream):
 async def readBody(req,host):
   reqBody = None
   requestBodyLength = req.headers['Content-Length']
-  ##print('Request Content-Length: '+requestBodyLength)
   if (req.rfile.readable() and requestBodyLength):  
     reqBody = await readRequest(req,int(requestBodyLength));
     if len(reqBody) < 5:
@@ -166,11 +164,10 @@ async def fetchResponse(req,host):
     connectionPromise = await promise(connectClient,[host])
     reqBodyPromise = await promise(readBody,[req,host])
     await astart()
-    localhost = req.headers['Host']
     reqHeaders = {}
     for header in req.headers:
-      reqHeaders[header] = req.headers[header].replace(localhost,host)
-    reqHeaders['Localhost']=localhost
+      reqHeaders[header] = req.headers[header].replace(req.localhost,host)
+    reqHeaders['Localhost']=req.localhost
     reqHeaders['Cache-Control'] = 'max-age=';
     reqHeaders['Expires'] = 'Tue, 19 Jan 2000 03:14:07 GMT'
     delete(reqHeaders,'Etag')
@@ -179,10 +176,7 @@ async def fetchResponse(req,host):
     reqBody = await reqBodyPromise
     connection = await connectionPromise
     await connectRequest(connection,req.command,req.path,reqBody,reqHeaders)
-    #print(host)
-    #print(req.path)
     res = await connectResponse(connection)
-    #print(res.status) 
     res.connection = connection
     return res
   except:
@@ -196,10 +190,11 @@ class handler(BaseHTTPRequestHandler):
     request.isTimedOut=false
     hostFirst = '';
     try:  
+      request.localhost = request.headers['Host']
       request.timeout=5
-      #print('Starting '+request.headers['Host']+request.path)
-      await promise(atimeout,[request,2])
-      await astart()
+      if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+        await promise(atimeout,[request,2])
+        await astart()
       if 'jquery.js' in request.path:
           request.path='/_static/jquery.js'
       if(request.path.split('?')[0] in ['/injects.js','/injects.css','/_static/jquery.js','/static/js/warehouse.c431b9ad.js','/plugins/discourse-client-performance/javascripts/discourse-client-performance.js','/wiki/common/js/common.js']):
@@ -212,29 +207,23 @@ class handler(BaseHTTPRequestHandler):
         #await AQ(connectClose,[response.connection])
         #await AQ(streamDetach,[request.wfile])
         return rtrn
-      localhost = request.headers['Host']
       hostFirst = hostTargetList[0]
       if(request.headers['Referer']):
         referer = request.headers['Referer']
-        #print('Referer '+referer)
         if("hostname=" in referer):
           hostFirst = referer.split("hostname=")[1].split('&')[0].split('#')[0]
       if("hostname=" in request.path):
         hostFirst = request.path.split("hostname=")[1].split('&')[0].split('#')[0]
       request.path = stripHostParam(request.path)
       response = await fetchResponse(request,hostFirst)
-      print(hostFirst)
-     # #print(response.status)
       lastHost = hostFirst
-   #   #print("retry loop")
-      if hostFirst not in ['packaging.python.org','packaging-python-org.weblet.repl.co']:
+      if hostFirst not in ['packaging.python.org','packaging-python-org.weblet.repl.co','packaging-python-org.vercel.app']:
         for hostTarget in hostTargetList:
           if response.status == 304:
             requestPath = request.path
             request.path = bustCache(request.path)
             response = await fetchResponse(request,lastHost)
             request.path=requestPath
-           # #print(response.status)
             if response.status < 200:
               break
           lastHost = hostTarget
@@ -246,30 +235,23 @@ class handler(BaseHTTPRequestHandler):
               requestPath=request.path
               request.path=header[1].split(redirectHost)[1]
               response = await fetchResponse(request,redirectHost)
-              ##print(response.status)
               request.path=requestPath
               if response.status < 300:
                 break
           if response.status > 299:
             response = await fetchResponse(request,hostTarget)
-        #  #print(response.status)
-       # #print("send res prom")
       sendResponsePromise = await promise(sendResponse,[request,response.status])
       await astart();
-
       headers = response.getheaders()
       await sendResponsePromise
       contentType=''
       contentEncoding=''
       contentLength=2000000
-     # print("header loop")
       for header in headers:
         if header[0]=='Transfer-Encoding':
           continue
         if header[0]=='Connection':
           continue
-
-        #print('Header: '+header[0]+':'+header[1])
         if header[0] == 'Content-Type':
           contentType = header[1]
         if header[0] == 'Content-Encoding':
@@ -284,7 +266,6 @@ class handler(BaseHTTPRequestHandler):
           request.send_header(header[0], header[1])
         except:
           none()
-      print('Response Content-Length: '+str(contentLength))
       resBodyPromise = await promise(readResponseBody,[response,contentLength])
       await astart()
       await endHeaders(request)
@@ -292,7 +273,6 @@ class handler(BaseHTTPRequestHandler):
       if 'text/html' in contentType:
         if len(contentEncoding) == 0:
           resBody = str(resBody,encoding='utf-8').replace('</head>','<script src="/injects.js"></script></head>')
-         # #print(resBody)
           resBody=bytes(resBody, 'utf-8')
       if 'javascript' in contentType:
         if len(contentEncoding) == 0:
@@ -304,7 +284,8 @@ class handler(BaseHTTPRequestHandler):
     except:
       if hostFirst != 'packaging.python.org':
         if request.isTimedOut == true:
-          killRequest(request)
+          if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+            killRequest(request)
         ct = 'text/html'
         code = 200 
         writeEnd = b'408 /*<script src="/injects.js"></script><style hideme>html:has([hideme]){visibility:hidden;}</style>*/';
@@ -324,10 +305,13 @@ class handler(BaseHTTPRequestHandler):
        # await AQ(streamDetach,[request.wfile])
         #reboot()
         if request.headers['Host'] in hostShortCircuit:
-          killRequest(request)
+
+          if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+            killRequest(request)
     if hostFirst == 'packaging.python.org':
       request.wfile.flush()
-      request.wfile.close()
+      if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+        request.wfile.close()
     return rtrn   
   async def done_OPTIONS(request,data):
     request.send_response(200)
