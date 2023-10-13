@@ -3,6 +3,7 @@
 if(!globalThis.hostTargetList){
   globalThis.hostTargetList = ['www.python.org',
                               // 'packaging.python.org',
+                               'packaging-python-org.vercel.app',
                                'packaging-python-org.weblet.repl.co',
                                //'docs.python.org',
                                'docspythonorg.weblet.repl.co',
@@ -108,22 +109,13 @@ function transformLinks(attr){
       let char='?';
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
-                           pkgs[x][attr].replaceAll("packaging.python.org","packaging-python-org.weblet.repl.co")
+                           pkgs[x][attr].replaceAll("packaging.python.org","packaging-python-org.vercel.app")
      .replaceAll("www.pypa.io","wwwpypaio.weblet.repl.co")
       .replaceAll('docs.python.org','docspythonorg.weblet.repl.co')
        .replaceAll('bugs.python.org','bugspythonorg.weblet.repl.co')
         .replaceAll('devguide.python.org','devguidepythonorg.weblet.repl.co'));
     }
   
-    pkgs = document.querySelectorAll('['+attr+'$="?hostname=tour.golang.org"]');
-    pkgs_length = pkgs.length;
-    for(let x=0;x<pkgs_length;x++){
-      let char='?';
-      if(pkgs[x][attr].includes('?')){char='&';}
-         pkgs[x].setAttribute(attr,
-                           pkgs[x][attr].replaceAll("/?hostname=tour.golang.org","/tour")
-                                       .replaceAll( "?hostname=tour.golang.org","/tour"));
-    }
   
 
     if(!window.location.href.includes('hostname=')){return;}
