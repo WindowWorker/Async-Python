@@ -29,7 +29,7 @@ globalThis.hostTargetList = [
   'wiki.python.org',
   'peps.python.org',
   'mail.python.org',
-  'bugspythonorg.weblet.repl.co',
+  'bugs-python-org.vercel.app',
   'discuss.python.org',
   'devguidepythonorg.weblet.repl.co',
   'planetpython.org',

@@ -7,6 +7,7 @@ if(!globalThis.hostTargetList){
       
                                'packaging-python-org.vercel.app',
                                'packaging-python-org.weblet.repl.co',
+                               'docs-python-org.vercel.app',
                                'docs-python-org.weblet.repl.co',
                                'pypi.org',
                                'www-pypa-io.vercel.app',
@@ -14,7 +15,8 @@ if(!globalThis.hostTargetList){
                                'wiki.python.org',
                                'peps.python.org',
                                'mail.python.org',
-                               'bugspythonorg.weblet.repl.co',
+                               'bugs-python-org.vercel.app',
+                               'bugs-python-org.weblet.repl.co',
                                'discuss.python.org',
                                'devguidepythonorg.weblet.repl.co',
                                'planetpython.org',
@@ -118,8 +120,8 @@ async function transformLinks(attr){
          pkgs[x].setAttribute(attr,
                            pkgs[x][attr].replaceAll("packaging.python.org","packaging-python-org.vercel.app")
      .replaceAll("www.pypa.io","www-pypa-io.vercel.app")
-      .replaceAll('docs.python.org','docs-python-org.weblet.repl.co')
-       .replaceAll('bugs.python.org','bugspythonorg.weblet.repl.co')
+      .replaceAll('docs.python.org','docs-python-org.vercel.app')
+       .replaceAll('bugs.python.org','bugs-python-org.vercel.app')
         .replaceAll('devguide.python.org','devguidepythonorg.weblet.repl.co'));
     }
   
