@@ -57,6 +57,7 @@ class handler(BaseHTTPRequestHandler):
         '/boa.js', 
         '/favicon.js',
         '/get-prism.js', 
+        '/@@file/main.css',
         '/injects.css', '/_static/jquery.js',
           '/static/js/warehouse.c431b9ad.js',
         '/static/favicon.ico',
