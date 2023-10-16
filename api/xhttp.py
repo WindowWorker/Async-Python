@@ -205,6 +205,6 @@ async def fetchURL(url):
     return res
 
 def NewResponse():
-    conn = http.client.HTTPSConnection('www.google.com')
+    conn = http.client.HTTPSConnection('www.python.org')
     conn.request('GET','/');
     return conn.getresponse()
