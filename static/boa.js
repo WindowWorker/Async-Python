@@ -36,7 +36,7 @@ visibility:hidden;
   let snakes = document.querySelectorAll('img[src*="python" i]:not([from="wikipedia"])');
   let snakes_length = snakes.length;
   for(let i=0;i<snakes_length;i++){
-    let size=Math.max(snakes[i].naturalWidth,snakes[i].naturalHeight)+'px';
+    let size=Math.max(Math.min(snakes[i].naturalWidth,snakes[i].naturalHeight),12)+'px';
     snakes[i].style.maxWidth=size;
     snakes[i].style.maxHeight=size;
     snakes[i].setAttribute('from','wikipedia');
