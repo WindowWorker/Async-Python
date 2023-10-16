@@ -70,14 +70,16 @@ class handler(BaseHTTPRequestHandler):
           with open('static' + request.path.split('?')[0], 'r') as f:
             content = f.read()
           request.send_response(200)
-          request.send_header('Content-type', 'text/javascript')
+          if '.js' in request.path:
+            request.send_header('Content-type', 'text/javascript')
           request.end_headers()
           return await writeResponseBody(request, bytes(content, 'utf8'))
         else:
           res = await fetchURL(globalThis.staticPrefix + request.path)
           resBody = res.read()
           request.send_response(200)
-          request.send_header('Content-type', 'text/javascript')
+          if '.js' in request.path:
+            request.send_header('Content-type', 'text/javascript')
           request.end_headers()
           request.wfile.write(resBody)
           res.connection.close()
