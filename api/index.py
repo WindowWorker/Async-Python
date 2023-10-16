@@ -152,12 +152,13 @@ class handler(BaseHTTPRequestHandler):
         if 'olicy' in header[0]:
           continue
         try:
-          reheader=header[1].replace(request.hostTarget,request.localhost)
+          reheader=header[1].replace(request.hostTarget,request.localhost,1)
           if header[0] == 'Location':
             char = '?'
             if('?' in reheader):
               char='&'
-            rehader=reheader.split('#')[0]+char+'hostname='+request.hostTarget
+              if 'hostname=' not in reheader:
+                reheader=reheader.split('#')[0]+char+'hostname='+request.hostTarget
           request.send_header(header[0],reheader)
         except:
           none()
