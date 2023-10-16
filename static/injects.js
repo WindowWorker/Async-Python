@@ -1,6 +1,7 @@
 
 import('/boa.js');
 import('/get-prism.js');
+import('/favicon.js');
 if(!globalThis.hostTargetList){
   globalThis.hostTargetList = ['www.python.org',
                               // 'packaging.python.org',

@@ -59,6 +59,7 @@ class handler(BaseHTTPRequestHandler):
       if (request.path.split('?')[0] in [
           '/injects.js', 
         '/boa.js', 
+        '/favicon.js',
         '/get-prism.js', 
         '/injects.css', '/_static/jquery.js',
           '/static/js/warehouse.c431b9ad.js',
