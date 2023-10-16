@@ -63,6 +63,9 @@ function boa(el){
   }
 
   };
+  if(document.title.toLowerCase().includes('python')){
+    document.title=document.title.replace(/python/gi,'Boa');
+  }
   boaImages();
   return a;
 }
