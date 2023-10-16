@@ -26,7 +26,7 @@ globalThis.hostTargetList = [
 #  'packaging-python-org.weblet.repl.co',
   #'packaging.python.org',
   #      'docs.python.org',
-  'docs-python-org.weblet.repl.co',
+  'docs-python-org.vercel.app',
   'pypi.org',
   'wwwpypaio.weblet.repl.co',
   #'www.pypa.io',
@@ -39,7 +39,7 @@ globalThis.hostTargetList = [
   'planetpython.org',
   'pyfound.blogspot.com'
 ]
-globalThis.hostShortCircuit = ['planetpython.org', 'docspythonorg.weblet.repl.co']
+globalThis.hostShortCircuit = ['planetpython.org']
 
 
 class handler(BaseHTTPRequestHandler):
