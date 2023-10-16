@@ -198,9 +198,9 @@ class handler(BaseHTTPRequestHandler):
         request.send_header('Content-type', ct)
         await endHeaders(request)
         rtrn = await writeResponseBody(request, writeEnd)
-        #if request.headers['Host'] in globalThis.hostShortCircuit:
-       #     if globalThis.env == 'test':
-        #      closeRequest(request)
+        if request.headers['Host'] in globalThis.hostShortCircuit:
+            if globalThis.env == 'test':
+              closeRequest(request)
     if hostFirst == 'packaging.python.org':
       request.wfile.flush()
       if globalThis.env == 'test':
