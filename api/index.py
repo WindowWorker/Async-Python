@@ -31,7 +31,7 @@ globalThis.hostTargetList = [
   'mail.python.org',
   'bugs-python-org.vercel.app',
   'discuss.python.org',
-  'devguidepythonorg.weblet.repl.co',
+  'devguide-python-org.vercel.app',
   'planetpython.org',
   'pyfound.blogspot.com'
 ]

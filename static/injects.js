@@ -18,7 +18,8 @@ if(!globalThis.hostTargetList){
                                'bugs-python-org.vercel.app',
                                'bugs-python-org.weblet.repl.co',
                                'discuss.python.org',
-                               'devguidepythonorg.weblet.repl.co',
+                               'devguide-python-org.vercel.app',
+                               'devguide-python-org.weblet.repl.co',
                                'planetpython.org',
                                'pyfound.blogspot.com'
                               ];
@@ -122,7 +123,7 @@ async function transformLinks(attr){
      .replaceAll("www.pypa.io","www-pypa-io.vercel.app")
       .replaceAll('docs.python.org','docs-python-org.vercel.app')
        .replaceAll('bugs.python.org','bugs-python-org.vercel.app')
-        .replaceAll('devguide.python.org','devguidepythonorg.weblet.repl.co'));
+        .replaceAll('devguide.python.org','devguide-python-org.vercel.app'));
     }
   
   
