@@ -8,6 +8,8 @@ import sys, threading
 from api.excepts import *
 
 
+
+
 async def sendResponse(request, status):
   return request.send_response(status)
 
@@ -28,8 +30,8 @@ async def readResponseBody(res, length):
       return b''
 
 
-def killRequest(request):
-  if 'kill' in request.kill:
+def closeRequest(request):
+  if 'close' in request.close:
     none()
 
 
@@ -49,7 +51,7 @@ async def atimeout(request, seconds):
     code = 200
     writeEnd = b''
   if '.js' in request.path:
-    return killRequest(request)
+    return closeRequest(request)
     ct = 'text/javascript'
     code = 200
     writeEnd = b''
@@ -58,17 +60,16 @@ async def atimeout(request, seconds):
   await endHeaders(request)
   rtrn = await writeResponseBody(request, writeEnd)
   if 'planetpython' in request.headers['Host']:
-    killRequest(request)
+    closeRequest(request)
   await AQ(streamDetach, [request.wfile])
-  if request.headers['Host'] in hostShortCircuit:
-    killRequest(request)
+  if request.headers['Host'] in request.globalThis.hostShortCircuit:
+    closeRequest(request)
   return rtrn
 
 
 async def writeResponseBody(req, body):
-  if hasattr(req, "localhost"):
-    if req.localhost == 'async-python-reverse-proxy.weblet.repl.co':
-      await (await promise(atimeout, [req, 1])).start()
+  if req.globalThis.env =='test':
+    await (await promise(atimeout, [req, 1])).start()
   try:
     return req.wfile.write(body)
   except:
@@ -160,10 +161,8 @@ httpd = {}
 async def fetchResponse(req, host):
   connection = {}
   try:
-    connectionPromise = await promise(connectClient, [host])
-    await connectionPromise.start()
-    reqBodyPromise = await promise(readBody, [req, host])
-    await reqBodyPromise.start()
+    connectionPromise = await go(await promise(connectClient, [host]))
+    reqBodyPromise = await go(await promise(readBody, [req, host]))
     reqHeaders = {}
     for header in req.headers:
       reqHeaders[header] = req.headers[header].replace(req.localhost, host)
@@ -177,6 +176,21 @@ async def fetchResponse(req, host):
     connection = await connectionPromise
     await connectRequest(connection, req.command, req.path, reqBody,
                          reqHeaders)
+    res = await connectResponse(connection)
+    res.connection = connection
+    return res
+  except:
+    res = http.client.HttpResponse(status=500)
+    res.connection = connection
+    return res
+
+async def fetchURL(url):
+  connection = {}
+  host = url.split('/')[2]
+  path = url.splt(host)[1]
+  try:
+    connection = await connectClient(host)
+    await connectRequest(connection, 'GET', path)
     res = await connectResponse(connection)
     res.connection = connection
     return res

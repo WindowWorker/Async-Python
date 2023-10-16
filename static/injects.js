@@ -1,12 +1,13 @@
 
-
+import('/boa.js');
+import('/get-prism.js');
 if(!globalThis.hostTargetList){
   globalThis.hostTargetList = ['www.python.org',
                               // 'packaging.python.org',
                                'packaging-python-org.vercel.app',
                                'packaging-python-org.weblet.repl.co',
                                //'docs.python.org',
-                               'docspythonorg.weblet.repl.co',
+                               'docs-python-org.weblet.repl.co',
                                'pypi.org',
                                'wwwpypaio.weblet.repl.co',
                            //    'www.pypa.io',
@@ -23,9 +24,9 @@ if(!globalThis.hostTargetList){
 
 
 if(/*window.location.pathname.startsWith('/installing/')&&*/
-  (window.location.href.includes('docspythonorg.weblet.repl.co')||
+  (window.location.href.includes('docs-python-org.weblet.repl.co')||
    (window.location.href.includes('docs.python.org')))&&
-  document.body.innerText.startsWith('40')){
+  document.body&&document.body.innerText.startsWith('40')){
   window.location.href=window.location.origin+'/3'+window.location.pathname+window.location.search+window.location.hash;
 }
 try{
@@ -54,20 +55,22 @@ setInterval(function(){
 
 
 
-function transformLinks(attr){
+async function transformLinks(attr){
 
 
- let pkgs = document.querySelectorAll('['+attr+'^="/"],['+attr+'^="./"],['+attr+'^="../"],['+attr+']:not(['+attr+'*=":"])');
+ let pkgs = document.querySelectorAll('['+attr+'^="/"]:not([backup]),['+attr+'^="./"]:not([backup]),['+attr+'^="../"]:not([backup]),['+attr+']:not(['+attr+'*=":"]):not([backup])');
   let pkgs_length = pkgs.length;
   for(let i=0;i<pkgs_length;i++){
+    await backupNode(pkgs[i]);
        pkgs[i].setAttribute(attr,pkgs[i][attr]);
   }
 
   const hostTargetList_length = globalThis.hostTargetList.length;
   for(let i=0;i<hostTargetList_length;i++){
-    pkgs = document.querySelectorAll('['+attr+'^="https://'+globalThis.hostTargetList[i]+'"]');
+    pkgs = document.querySelectorAll('['+attr+'^="https://'+globalThis.hostTargetList[i]+'"]:not([backup])');
     pkgs_length = pkgs.length;
     for(let x=0;x<pkgs_length;x++){
+      await backupNode(pkgs[x]);
       let hash='';
       if(pkgs[x][attr].includes('#')){hash='#'+pkgs[x][attr].split('#')[1];}
       let char='?';
@@ -83,35 +86,38 @@ function transformLinks(attr){
 
   }
   
-  pkgs = document.querySelectorAll('['+attr+'^="http://"]');
+  pkgs = document.querySelectorAll('['+attr+'^="http://"]:not([backup])');
     pkgs_length = pkgs.length;
     for(let x=0;x<pkgs_length;x++){
+      await backupNode(pkgs[x]);
       let char='?';
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
                            pkgs[x][attr].replaceAll("http://","https://"));
     }
   
-  pkgs = document.querySelectorAll('['+attr+'^="https://python.org"]');
+  pkgs = document.querySelectorAll('['+attr+'^="https://python.org"]:not([backup])');
     pkgs_length = pkgs.length;
     for(let x=0;x<pkgs_length;x++){
+      await backupNode(pkgs[x]);
       let char='?';
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
                            pkgs[x][attr].replaceAll("https://python.org","https://www.python.org"));
     }
   
-  pkgs = document.querySelectorAll('['+attr+'*="packaging.python.org"],['+attr+'*="www.pypa.io"],'+
-                                   '['+attr+'*="docs.python.org"],'+
-                                   '['+attr+'*="bugs.python.org"],['+attr+'*="devguide.python.org"]');
+  pkgs = document.querySelectorAll('['+attr+'*="packaging.python.org"]:not([backup]),['+attr+'*="www.pypa.io"],'+
+                                   '['+attr+'*="docs.python.org"]:not([backup]),'+
+                                   '['+attr+'*="bugs.python.org"]:not([backup]),['+attr+'*="devguide.python.org"]:not([backup])');
     pkgs_length = pkgs.length;
     for(let x=0;x<pkgs_length;x++){
+      await backupNode(pkgs[x]);
       let char='?';
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
                            pkgs[x][attr].replaceAll("packaging.python.org","packaging-python-org.vercel.app")
      .replaceAll("www.pypa.io","wwwpypaio.weblet.repl.co")
-      .replaceAll('docs.python.org','docspythonorg.weblet.repl.co')
+      .replaceAll('docs.python.org','docs-python-org.weblet.repl.co')
        .replaceAll('bugs.python.org','bugspythonorg.weblet.repl.co')
         .replaceAll('devguide.python.org','devguidepythonorg.weblet.repl.co'));
     }
@@ -137,56 +143,30 @@ function transformLinks(attr){
 
 
 
-void async function getPrism(){
+if(!globalThis.backupElements){globalThis.backupElements={};}
+async function backupNode(element){try{
+  if(element.tagName.toLowerCase()!='link'){return;}
+  if(element.getAttribute('rel')!='stylesheet'){return;}
+  if(document.querySelector('[href="'+element.getAttribute('href')+'"][backup]')){
+await new Promise((resolve, reject) => {setTimeout(resolve,100);})
 
-  addEventListener("DOMContentLoaded", (event) => {
-    getp();
-  });  
-
-getp();
-setTimeout(function(){getp();},1);
-  
-}();
-
-
-async function getp(){
-/*nope*/return;
-  
-  let thisLang = 'python';
-  let codes=document.querySelectorAll('pre:not([highlighted])');
-  let codes_length=codes.length;
-  for(let i=0;i<codes_length;i++){
-    codes[i].innerHTML='<code class="language-'+thisLang+'">'+codes[i].innerHTML+'</code>';
-    codes[i].setAttribute('highlighted','true');
   }
+  let backup = element.cloneNode(true);
+  let backupId = new Date().getTime();
+  backup.setAttribute('backup',backupId);
+  document.head.insertBefore(backup,document.head.firstElementChild);
+  backup.promise = new Promise((resolve, reject) => {
+    globalThis.backupElements[''+backupId]={"promise":backup.promise,"resolve":resolve};
+});
+  backup.onerror = function(e){globalThis.backupElements[backupId].resolve();}
+  backup.onload = function(e){globalThis.backupElements[backupId].resolve();}
+  backup.style.visibility="hidden";
+  document.head.insertBefore(backup,document.head.firstElementChild);
+const promise1 = new Promise((resolve, reject) => {setTimeout(resolve,1000);});
 
-  if(!document.querySelector('[id="prismmincss"]')){
-  let l=document.createElement('link');
-  l.href='https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css';
-  l.rel='stylesheet';
-  l.id="prismmincss";
-  document.body.appendChild(l);
+  await Promise.race([backup.promise,promise1]) ;
+  return;
+}catch(e){
+  return;
   }
-  
-  if(!document.querySelector('[id="prismminjs"]')){
-  let m=document.createElement('script');
-  m.src='https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js';
-  m.id="prismminjs";
-  m.onload=function(){
-    if(!document.querySelector('[id="prism'+thisLang+'minjs"]')){
-    let g=document.createElement('script');
-    g.src='https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-'+thisLang+'.min.js';
-    g.id="prism"+thisLang+"minjs";
-    g.onload=function(){Prism.highlightAll();};
-    document.body.appendChild(g); 
-    }  
-  };
-  document.body.appendChild(m);
-  }
-
-
-  
-
-
-  
 }

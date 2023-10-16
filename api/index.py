@@ -8,13 +8,25 @@ import sys, threading
 from api.excepts import *
 from api.xhttp import *
 
-hostTargetList = [
+
+def globalThis():
+  return
+
+globalThis.env = 'test'
+if sys.version_info.minor == 9:
+  globalThis.env = 'prod'
+
+globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive/Async-Python-Reverse-Proxy/main/static/'
+#print(globalThis.env)
+
+
+globalThis.hostTargetList = [
   'www.python.org',
   'packaging-python-org.vercel.app',
   'packaging-python-org.weblet.repl.co',
   #'packaging.python.org',
   #      'docs.python.org',
-  'docspythonorg.weblet.repl.co',
+  'docs-python-org.weblet.repl.co',
   'pypi.org',
   'wwwpypaio.weblet.repl.co',
   #'www.pypa.io',
@@ -27,35 +39,44 @@ hostTargetList = [
   'planetpython.org',
   'pyfound.blogspot.com'
 ]
-hostShortCircuit = ['planetpython.org', 'docspythonorg.weblet.repl.co']
+globalThis.hostShortCircuit = ['planetpython.org', 'docspythonorg.weblet.repl.co']
 
 
 class handler(BaseHTTPRequestHandler):
 
   async def do_METHOD(request, data):
+    request.globalThis=globalThis
     rtrn = {}
     request.isTimedOut = False
     hostFirst = ''
     try:
       request.localhost = request.headers['Host']
       request.timeout = 5
-      if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+      if globalThis.env == 'test':
         await go(await promise(atimeout, [request, 2]))
       if 'jquery.js' in request.path:
         request.path = '/_static/jquery.js'
       if (request.path.split('?')[0] in [
-          '/injects.js', '/injects.css', '/_static/jquery.js',
+          '/injects.js', 
+        '/boa.js', 
+        '/get-prism.js', 
+        '/injects.css', '/_static/jquery.js',
           '/static/js/warehouse.c431b9ad.js',
           '/plugins/discourse-client-performance/javascripts/discourse-client-performance.js',
           '/wiki/common/js/common.js'
       ]):
-        with open('static' + request.path.split('?')[0], 'r') as f:
-          content = f.read()
-        request.send_response(200)
-        request.send_header('Content-type', 'text/javascript')
-        request.end_headers()
-        return await writeResponseBody(request, bytes(content, 'utf8'))
-      hostFirst = hostTargetList[0]
+        if globalThis.env == 'test':
+          with open('static' + request.path.split('?')[0], 'r') as f:
+            content = f.read()
+          request.send_response(200)
+          request.send_header('Content-type', 'text/javascript')
+          request.end_headers()
+          return await writeResponseBody(request, bytes(content, 'utf8'))
+        else:
+          res = await fetchURL(globalThis.staticPrefix + request.path)
+          resBody = res.read()
+          return await writeResponseBody(request,resBody)
+      hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']
         if ("hostname=" in referer):
@@ -63,18 +84,23 @@ class handler(BaseHTTPRequestHandler):
       if ("hostname=" in request.path):
         hostFirst = request.path.split("hostname=")[1].split('&')[0].split(
           '#')[0]
+      if hostFirst == request.localhost:
+        hostFirst = globalThis.hostTargetList[0]
       request.path = stripHostParam(request.path)
-      response = await fetchResponse(request, hostFirst)
+      request.hostTarget = hostFirst
+      response = await fetchResponse(request, request.hostTarget)
       lastHost = hostFirst
       if hostFirst not in [
           'packaging.python.org', 'packaging-python-org.weblet.repl.co',
-          'packaging-python-org.vercel.app'
+          'packaging-python-org.vercel.app','docs.python.org', 'docs-python-org.weblet.repl.co',
+        'docs-python-org.vercel.app'
       ]:
-        for hostTarget in hostTargetList:
+        for hostTarget in globalThis.hostTargetList:
           if response.status == 304:
             requestPath = request.path
             request.path = bustCache(request.path)
-            response = await fetchResponse(request, lastHost)
+            request.hostTarget = lastHost
+            response = await fetchResponse(request, request.hostTarget)
             request.path = requestPath
             if response.status < 200:
               break
@@ -86,12 +112,14 @@ class handler(BaseHTTPRequestHandler):
               redirectHost = header[1].split('/')[2]
               requestPath = request.path
               request.path = header[1].split(redirectHost)[1]
-              response = await fetchResponse(request, redirectHost)
+              request.hostTarget = redirectHost
+              response = await fetchResponse(request, request.hostTarget)
               request.path = requestPath
               if response.status < 300:
                 break
           if response.status > 299:
-            response = await fetchResponse(request, hostTarget)
+            request.hostTarget = hostTarget
+            response = await fetchResponse(request, request.hostTarget)
       sendResponsePromise = await go(await promise(sendResponse,
                                                    [request, response.status]))
       headers = response.getheaders()
@@ -115,7 +143,13 @@ class handler(BaseHTTPRequestHandler):
         if 'olicy' in header[0]:
           continue
         try:
-          request.send_header(header[0], header[1])
+          reheader=header[1].replace(request.hostTarget,request.localhost)
+          if header[0] == 'Location':
+            char = '?'
+            if('?' in reheader):
+              char='&'
+            rehader=reheader.split('#')[0]+char+'hostname='+request.hostTarget
+          request.send_header(header[0],reheader)
         except:
           none()
       resBodyPromise = await go(await promise(readResponseBody,
@@ -136,8 +170,8 @@ class handler(BaseHTTPRequestHandler):
     except:
       if hostFirst != 'packaging.python.org':
         if request.isTimedOut == true:
-          if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
-            killRequest(request)
+          if globalThis.env == 'test':
+            closeRequest(request)
         ct = 'text/html'
         code = 200
         writeEnd = b'408 /*<script src="/injects.js"></script><style hideme>html:has([hideme]){visibility:hidden;}</style>*/\x03\x04'
@@ -146,7 +180,8 @@ class handler(BaseHTTPRequestHandler):
           code = 200
           writeEnd = b'\x03\x04'
         if '.js' in request.path:
-          return killRequest(request)
+          if globalThis.env == 'test':
+            return closeRequest(request)
           ct = 'text/javascript'
           code = 200
           writeEnd = b'\x03\x04'
@@ -154,13 +189,12 @@ class handler(BaseHTTPRequestHandler):
         request.send_header('Content-type', ct)
         await endHeaders(request)
         rtrn = await writeResponseBody(request, writeEnd)
-        if request.headers['Host'] in hostShortCircuit:
-          if hasattr(request, "localhost"):
-            if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
-              killRequest(request)
+        #if request.headers['Host'] in globalThis.hostShortCircuit:
+       #     if globalThis.env == 'test':
+        #      closeRequest(request)
     if hostFirst == 'packaging.python.org':
       request.wfile.flush()
-      if request.localhost == 'async-python-reverse-proxy.weblet.repl.co':
+      if globalThis.env == 'test':
         request.wfile.close()
     return rtrn
 
