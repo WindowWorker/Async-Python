@@ -4,14 +4,13 @@ import('/get-prism.js');
 import('/favicon.js');
 if(!globalThis.hostTargetList){
   globalThis.hostTargetList = ['www.python.org',
-                              // 'packaging.python.org',
+      
                                'packaging-python-org.vercel.app',
                                'packaging-python-org.weblet.repl.co',
-                               //'docs.python.org',
                                'docs-python-org.weblet.repl.co',
                                'pypi.org',
-                               'wwwpypaio.weblet.repl.co',
-                           //    'www.pypa.io',
+                               'www-pypa-io.vercel.app',
+                               'www-pypa-io.weblet.repl.co',
                                'wiki.python.org',
                                'peps.python.org',
                                'mail.python.org',
@@ -118,7 +117,7 @@ async function transformLinks(attr){
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
                            pkgs[x][attr].replaceAll("packaging.python.org","packaging-python-org.vercel.app")
-     .replaceAll("www.pypa.io","wwwpypaio.weblet.repl.co")
+     .replaceAll("www.pypa.io","www-pypa-io.vercel.app")
       .replaceAll('docs.python.org','docs-python-org.weblet.repl.co')
        .replaceAll('bugs.python.org','bugspythonorg.weblet.repl.co')
         .replaceAll('devguide.python.org','devguidepythonorg.weblet.repl.co'));
