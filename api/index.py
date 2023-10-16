@@ -62,6 +62,7 @@ class handler(BaseHTTPRequestHandler):
         '/get-prism.js', 
         '/injects.css', '/_static/jquery.js',
           '/static/js/warehouse.c431b9ad.js',
+        '/static/favicon.ico',
           '/plugins/discourse-client-performance/javascripts/discourse-client-performance.js',
           '/wiki/common/js/common.js'
       ]):
