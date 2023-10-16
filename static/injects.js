@@ -80,8 +80,8 @@ async function transformLinks(attr){
                               .replace('https://'+globalThis.hostTargetList[i],
                                window.location.origin)+
                               char+'hostname='+
-                              '&referer='+window.location.host+
                               globalThis.hostTargetList[i]+
+                              '&referer='+window.location.host+
                               hash);
     }  
 
