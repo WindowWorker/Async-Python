@@ -23,7 +23,7 @@ globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive
 globalThis.hostTargetList = [
   'www.python.org',
   'packaging-python-org.vercel.app',
-  'packaging-python-org.weblet.repl.co',
+#  'packaging-python-org.weblet.repl.co',
   #'packaging.python.org',
   #      'docs.python.org',
   'docs-python-org.weblet.repl.co',
