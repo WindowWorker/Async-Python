@@ -16,7 +16,7 @@ globalThis.env = 'test'
 if sys.version_info.minor == 9:
   globalThis.env = 'prod'
 
-globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive/Async-Python-Reverse-Proxy/main/static/'
+globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive/Async-Python-Reverse-Proxy/main/static'
 #print(globalThis.env)
 
 
@@ -75,7 +75,12 @@ class handler(BaseHTTPRequestHandler):
         else:
           res = await fetchURL(globalThis.staticPrefix + request.path)
           resBody = res.read()
-          return await writeResponseBody(request,resBody)
+          request.send_response(200)
+          request.send_header('Content-type', 'text/javascript')
+          request.end_headers()
+          request.wfile.write(resBody)
+          res.connection.close()
+          return
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']

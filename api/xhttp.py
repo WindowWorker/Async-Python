@@ -5,10 +5,13 @@ import time
 import os
 from api.promises import *
 import sys, threading
-from api.excepts import *
+#from api.excepts import *
+import copy
 
+def globalThis():
+  return
 
-
+globalThis.blankResponse = None
 
 async def sendResponse(request, status):
   return request.send_response(status)
@@ -180,21 +183,28 @@ async def fetchResponse(req, host):
     res.connection = connection
     return res
   except:
-    res = http.client.HttpResponse(status=500)
+    res = NewResponse()
+    NewResponse.status = 500
     res.connection = connection
     return res
 
 async def fetchURL(url):
   connection = {}
   host = url.split('/')[2]
-  path = url.splt(host)[1]
+  path = url.split(host)[1]
   try:
     connection = await connectClient(host)
-    await connectRequest(connection, 'GET', path)
+    await connectRequest(connection, 'GET', path,b'',{})
     res = await connectResponse(connection)
     res.connection = connection
     return res
   except:
-    res = http.client.HttpResponse(status=500)
+    res = NewResponse()
+    NewResponse.status = 500
     res.connection = connection
     return res
+
+def NewResponse():
+    conn = http.client.HTTPSConnection('www.google.com')
+    conn.request('GET','/');
+    return conn.getresponse()

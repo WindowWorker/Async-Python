@@ -80,6 +80,7 @@ async function transformLinks(attr){
                               .replace('https://'+globalThis.hostTargetList[i],
                                window.location.origin)+
                               char+'hostname='+
+                              '&referer='+window.location.host+
                               globalThis.hostTargetList[i]+
                               hash);
     }  
@@ -134,7 +135,7 @@ async function transformLinks(attr){
       let char='?';
       if(pkgs[x][attr].includes('?')){char='&';}
          pkgs[x].setAttribute(attr,
-                           pkgs[x][attr].split('#')[0]+char+'hostname='+localhostname+hash);
+                           pkgs[x][attr].split('#')[0]+char+'hostname='+localhostname+'&referer='+window.location.host+hash);
     }
   
 
