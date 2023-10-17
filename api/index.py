@@ -54,6 +54,7 @@ class handler(BaseHTTPRequestHandler):
         request.path = '/_static/jquery.js'
       if (request.path.split('?')[0] in [
           '/injects.js', 
+        '/sw.js', 
         '/boa.js', 
         '/favicon.js',
         '/get-prism.js', 

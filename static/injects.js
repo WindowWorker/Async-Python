@@ -2,6 +2,11 @@
 import('/boa.js');
 import('/get-prism.js');
 import('/favicon.js');
+setTimeout(function(){
+  let serviceWorker = document.createElement('script');
+  serviceWorker.src = '/sw.js';
+  document.body.appendChild(serviceWorker);
+},500);
 if(!globalThis.hostTargetList){
   globalThis.hostTargetList = ['www.python.org',
       
