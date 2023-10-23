@@ -1,34 +1,10 @@
-# Python 
+# Async Python Reverse Proxy
 
-Python is a high-level, interpreted programming language that has gained popularity in recent years due to its clear syntax and readability. It was first released in 1991 by Guido van Rossum, and is now maintained by the Python Software Foundation.
+This project is part of a personal effort to get a better understanding of certain programming languages.
+I have found one of the best ways to get a good feel for an unfamiliar lqnguage is to build a reverse proxy. 
+It had been a while since I really used Python so I did this as a sort of refresher.
+This reverse proxy is pounted at the Python official site. 
+You can see the end result here:
 
-One of the key features of Python is its readability and ease of use. Python's syntax is designed to be intuitive and easy to understand, making it a great language for beginners to learn. Additionally, its high-level, object-oriented design allows for the creation of clear and maintainable code, making it a popular choice for a wide range of applications.
+[https://python.patrickring.net](https://python.patrickring.net)
 
-Some of the key features of Python include:
-
-- Easy to Learn and Use
-- Interpreted Language
-- Cross-platform Compatibility
-- Large Standard Library
-- Dynamically Typed
-- Object-Oriented
-- High-level Language
-- Strong Support for Functional and Procedural Programming
-- Multipurpose
-- Large Community
-
-# Template
-
-**Name** : Python HTTP Server
-
-**Description** : Python is a high-level, interpreted programming language that has gained popularity in recent years due to its clear syntax and readability. It was first released in 1991 by Guido van Rossum, and is now maintained by the Python Software Foundation.
-
-# Errors/Feedback
-
-If you found any error feel free to do any of these things : 
-
-- Comment on the template
-- DM me on Discord
-- Mail me at Hugoonreplit@gmail.com
-
-All errors/feedback is appreciated!
