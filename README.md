@@ -11,6 +11,7 @@ You can see the end result here:
 Some additional requirements that I gave myself are to try and emulate promises as used in JavaScript using asyncio and to wrap every method that interacted with io to be wrapped in async.
 The project structure is a little strange because itbis setup to deploy both as a standalone server on replit and as a vercel serverless function.
 I mostly use replit for testing and vercel as production.
+I also require some sort of modification to the original site and to include routing for all of the subdomains linked from the home page.
 
 ## Lessons Learned
 I found out through trial and error that the standard http libraries are not http2 compatible. 
