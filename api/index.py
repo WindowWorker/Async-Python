@@ -48,14 +48,14 @@ class handler(BaseHTTPRequestHandler):
     hostFirst = ''
     try:
       try:
-        if len(request.headers.get('host',"")) > 0:
+        if len(request.headers.get('bot-protection',"")) > 0:
           pass
         else:
           request.send_response(200)
           request.send_header('Content-type', 'text/html')
           request.end_headers()
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          return
+          return {}
       except:
        pass
       request.localhost = request.headers['Host']
@@ -94,7 +94,7 @@ class handler(BaseHTTPRequestHandler):
           request.end_headers()
           request.wfile.write(resBody)
           res.connection.close()
-          return
+          return {}
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']
