@@ -28,7 +28,7 @@ globalThis.hostTargetList = [
   'www-pypa-io.vercel.app',
   'wiki.python.org',
   'peps.python.org',
-  'mail.python.org',
+ # 'mail.python.org',
   'bugs-python-org.vercel.app',
   'discuss.python.org',
   'devguide-python-org.vercel.app',
