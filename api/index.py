@@ -84,7 +84,9 @@ class handler(BaseHTTPRequestHandler):
           res.connection.close()
           return
       try:
-        if (!(request.headers['Bot-Protection'])):
+        if (request.headers['Bot-Protection']):
+          pass
+        else:
           request.send_header('Content-type', 'text/html')
           request.end_headers()
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
