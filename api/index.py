@@ -89,11 +89,13 @@ class handler(BaseHTTPRequestHandler):
           request.end_headers()
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
           res.connection.close()
+          return
       except:
         request.send_header('Content-type', 'text/html')
         request.end_headers()
         request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
         res.connection.close()
+        return
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']
