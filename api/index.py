@@ -89,6 +89,7 @@ class handler(BaseHTTPRequestHandler):
         if len(request.headers.get('Bot-Protection',"")) > 0:
           pass
         else:
+          pass
          # print('send_response')
          # request.send_response(200)
          # print('send_header')
