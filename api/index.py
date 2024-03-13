@@ -57,14 +57,7 @@ class handler(BaseHTTPRequestHandler):
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
           return
       except:
-        try:
-          request.send_response(200)
-          request.send_header('Content-type', 'text/html')
-          request.end_headers()
-          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          return
-        except:
-          return
+       pass
       request.localhost = request.headers['Host']
       request.timeout = 5
       if globalThis.env == 'test':
