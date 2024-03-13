@@ -22,19 +22,18 @@ globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive
 
 globalThis.hostTargetList = [
   'www.python.org',
-  'www.python.org'
- # 'packaging-python-org.vercel.app',
- # 'docs-python-org.vercel.app',
- # 'pypi.org',
- # 'www-pypa-io.vercel.app',
- # 'wiki.python.org',
- # 'peps.python.org',
- # 'mail.python.org',
- # 'bugs-python-org.vercel.app',
- # 'discuss.python.org',
- # 'devguide-python-org.vercel.app',
- # 'planetpython.org',
- # 'pyfound.blogspot.com'
+  'packaging-python-org.vercel.app',
+  'docs-python-org.vercel.app',
+  'pypi.org',
+  'www-pypa-io.vercel.app',
+  'wiki.python.org',
+  'peps.python.org',
+  'mail.python.org',
+  'bugs-python-org.vercel.app',
+  'discuss.python.org',
+  'devguide-python-org.vercel.app',
+  'planetpython.org',
+  'pyfound.blogspot.com'
 ]
 globalThis.hostShortCircuit = ['planetpython.org']
 
@@ -46,6 +45,7 @@ class handler(BaseHTTPRequestHandler):
     rtrn = {}
     request.isTimedOut = False
     hostFirst = ''
+    try:
       request.localhost = request.headers['Host']
       request.timeout = 5
       if globalThis.env == 'test':
@@ -82,19 +82,24 @@ class handler(BaseHTTPRequestHandler):
           request.end_headers()
           request.wfile.write(resBody)
           res.connection.close()
-          return {}
+          return rtrn
       try:
-        try:
-          if len(request.headers.get('bot-protection',"")) > 0:
-            pass
-          else:
-            request.send_response(200)
-            request.send_header('Content-type', 'text/html')
-            request.end_headers()
-            request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-            return {}
-        except:
-         pass
+        print(len(request.headers.get('Bot-Protection',"")))
+        if len(request.headers.get('Bot-Protection',"")) > 0:
+          pass
+        else:
+          print('send_response')
+          request.send_response(200)
+          print('send_header')
+          request.send_header('Content-type', 'text/html')
+          print('end_headers')
+          request.end_headers()
+          print('wfile.write')
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          print('return')
+          return rtrn
+      except:
+        print("Here")
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']
