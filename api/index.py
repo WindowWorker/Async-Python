@@ -90,13 +90,13 @@ class handler(BaseHTTPRequestHandler):
           pass
         else:
          # print('send_response')
-          request.send_response(200)
+         # request.send_response(200)
          # print('send_header')
-          request.send_header('Content-type', 'text/html')
+         # request.send_header('Content-type', 'text/html')
          # print('end_headers')
-          request.end_headers()
+         # request.end_headers()
          # print('wfile.write')
-          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+         # request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
          # print('return')
           #return rtrn
       except:
