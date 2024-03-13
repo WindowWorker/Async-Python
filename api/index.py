@@ -85,7 +85,7 @@ class handler(BaseHTTPRequestHandler):
           res.connection.close()
           return
       try:
-        if (request.headers['Bot-Protection']):
+        if (request.headers['bot-protection']):
           pass
         else:
           request.send_header('Content-type', 'text/html')
