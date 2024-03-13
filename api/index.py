@@ -91,14 +91,12 @@ class handler(BaseHTTPRequestHandler):
           request.send_header('Content-type', 'text/html')
           request.end_headers()
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          res.connection.close()
           return
       except:
         try:
           request.send_header('Content-type', 'text/html')
           request.end_headers()
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          res.connection.close()
           return
         except:
           return
