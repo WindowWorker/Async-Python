@@ -83,6 +83,17 @@ class handler(BaseHTTPRequestHandler):
           request.wfile.write(resBody)
           res.connection.close()
           return
+      try:
+        if (!(request.headers['Bot-Protection'])):
+          request.send_header('Content-type', 'text/html')
+          request.end_headers()
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://typescripts.org/"><script>location.replace("https://typescripts.org/");/script>', 'utf-8'))
+          res.connection.close()
+      except:
+        request.send_header('Content-type', 'text/html')
+        request.end_headers()
+        request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://typescripts.org/"><script>location.replace("https://typescripts.org/");/script>', 'utf-8'))
+        res.connection.close()
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
         referer = request.headers['Referer']
