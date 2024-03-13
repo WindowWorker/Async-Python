@@ -49,7 +49,7 @@ class handler(BaseHTTPRequestHandler):
     try:
       try:
         if len(request.headers.get('Bot-Protection',"")) > 0:
-          none()
+          pass
         else:
           request.send_response(200)
           request.send_header('Content-type', 'text/html')
@@ -57,7 +57,7 @@ class handler(BaseHTTPRequestHandler):
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
           return
       except:
-       none()
+       pass
       request.localhost = request.headers['Host']
       request.timeout = 5
       if globalThis.env == 'test':
