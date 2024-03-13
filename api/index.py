@@ -48,7 +48,7 @@ class handler(BaseHTTPRequestHandler):
     hostFirst = ''
     try:
       try:
-        if request.headers.get('bot-protection',"") is not None:
+        if len(request.headers.get('Bot-Protection',"")) > 0:
           pass
         else:
           request.send_header('Content-type', 'text/html')
