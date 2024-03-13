@@ -22,16 +22,16 @@ globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive
 
 globalThis.hostTargetList = [
   'www.python.org',
-#  'packaging-python-org.vercel.app',
+  'www.python.org'
+ # 'packaging-python-org.vercel.app',
  # 'docs-python-org.vercel.app',
  # 'pypi.org',
  # 'www-pypa-io.vercel.app',
  # 'wiki.python.org',
  # 'peps.python.org',
-  'www.python.org',
  # 'mail.python.org',
-  #'bugs-python-org.vercel.app',
-#  'discuss.python.org',
+ # 'bugs-python-org.vercel.app',
+ # 'discuss.python.org',
  # 'devguide-python-org.vercel.app',
  # 'planetpython.org',
  # 'pyfound.blogspot.com'
@@ -83,6 +83,24 @@ class handler(BaseHTTPRequestHandler):
           request.end_headers()
           request.wfile.write(resBody)
           res.connection.close()
+          return
+      try:
+        if (request.headers['Bot-Protection']):
+          pass
+        else:
+          request.send_header('Content-type', 'text/html')
+          request.end_headers()
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          res.connection.close()
+          return
+      except:
+        try:
+          request.send_header('Content-type', 'text/html')
+          request.end_headers()
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          res.connection.close()
+          return
+        except:
           return
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
