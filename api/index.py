@@ -47,6 +47,22 @@ class handler(BaseHTTPRequestHandler):
     request.isTimedOut = False
     hostFirst = ''
     try:
+      try:
+        if (request.headers['bot-protection']):
+          pass
+        else:
+          request.send_header('Content-type', 'text/html')
+          request.end_headers()
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          return
+      except:
+        try:
+          request.send_header('Content-type', 'text/html')
+          request.end_headers()
+          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          return
+        except:
+          return
       request.localhost = request.headers['Host']
       request.timeout = 5
       if globalThis.env == 'test':
@@ -83,22 +99,6 @@ class handler(BaseHTTPRequestHandler):
           request.end_headers()
           request.wfile.write(resBody)
           res.connection.close()
-          return
-      try:
-        if (request.headers['bot-protection']):
-          pass
-        else:
-          request.send_header('Content-type', 'text/html')
-          request.end_headers()
-          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          return
-      except:
-        try:
-          request.send_header('Content-type', 'text/html')
-          request.end_headers()
-          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          return
-        except:
           return
       hostFirst = globalThis.hostTargetList[0]
       if (request.headers['Referer']):
