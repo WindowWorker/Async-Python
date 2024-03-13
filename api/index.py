@@ -89,16 +89,16 @@ class handler(BaseHTTPRequestHandler):
         if len(request.headers.get('Bot-Protection',"")) > 0:
           pass
         else:
-          print('send_response')
+         # print('send_response')
           request.send_response(200)
-          print('send_header')
+         # print('send_header')
           request.send_header('Content-type', 'text/html')
-          print('end_headers')
+         # print('end_headers')
           request.end_headers()
-          print('wfile.write')
+         # print('wfile.write')
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
-          print('return')
-          return rtrn
+         # print('return')
+          #return rtrn
       except:
         print("Here")
       hostFirst = globalThis.hostTargetList[0]
