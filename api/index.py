@@ -22,18 +22,19 @@ globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive
 
 globalThis.hostTargetList = [
   'www.python.org',
-  'packaging-python-org.vercel.app',
-  'docs-python-org.vercel.app',
-  'pypi.org',
-  'www-pypa-io.vercel.app',
-  'wiki.python.org',
-  'peps.python.org',
-  'mail.python.org',
-  'bugs-python-org.vercel.app',
-  'discuss.python.org',
-  'devguide-python-org.vercel.app',
-  'planetpython.org',
-  'pyfound.blogspot.com'
+  'www.python.org'
+ # 'packaging-python-org.vercel.app',
+ # 'docs-python-org.vercel.app',
+ # 'pypi.org',
+ # 'www-pypa-io.vercel.app',
+ # 'wiki.python.org',
+ # 'peps.python.org',
+ # 'mail.python.org',
+ # 'bugs-python-org.vercel.app',
+ # 'discuss.python.org',
+ # 'devguide-python-org.vercel.app',
+ # 'planetpython.org',
+ # 'pyfound.blogspot.com'
 ]
 globalThis.hostShortCircuit = ['planetpython.org']
 
