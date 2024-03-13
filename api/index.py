@@ -48,7 +48,7 @@ class handler(BaseHTTPRequestHandler):
     hostFirst = ''
     try:
       try:
-        if len(request.headers.get('Bot-Protection',"")) > 0:
+        if len(request.headers.get('host',"")) > 0:
           pass
         else:
           request.send_response(200)
