@@ -7,6 +7,7 @@ from api.promises import *
 import sys, threading
 from api.excepts import *
 from api.zfetch import *
+from api.z import *
 import copy
 
 def globalThis():
@@ -199,6 +200,52 @@ async def fetchResponse(req, host):
     NewResponse.status = 500
     res.connection = connection
     return res
+
+def zdelete(a,b):
+  try:
+    return delete(a,b)
+  except:
+    return None
+
+async def zfetchResponse(req, host):
+  connection = {}
+  try:
+    connectionPromise = await go(await promise(connectClient, [host]))
+    reqBodyPromise = await go(await promise(readBody, [req, host]))
+    reqHeaders = {}
+    for header in req.headers:
+      try:
+        reqHeaders[header] = str(at(req.headers,[header])).replace(req.localhost, host)
+      except:
+        pass
+    try:
+      reqHeaders['Localhost'] = req.localhost
+    except:
+      pass
+    try:
+      reqHeaders['Cache-Control'] = 'max-age='
+    except:
+      pass
+    try:
+      reqHeaders['Expires'] = 'Tue, 19 Jan 2000 03:14:07 GMT'
+    except:
+      pass
+    zdelete(reqHeaders, 'Etag')
+    zdelete(reqHeaders, 'Expect-Ct')
+    zdelete(reqHeaders, 'Cookie')
+    reqBody = await reqBodyPromise
+    connection = await connectionPromise
+    await zconnectRequest(connection, req.command, req.path, reqBody,
+                         reqHeaders)
+    res = await connectResponse(connection)
+    res.connection = connection
+    return res
+  except:
+    res = NewResponse()
+    NewResponse.status = 500
+    res.connection = connection
+    return res
+
 
 async def fetchURL(url):
   connection = {}
