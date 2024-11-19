@@ -96,6 +96,17 @@ async def connectRequest(connection, requestCommand, requestPath, requestBody,
                             requestPath,
                             body=requestBody,
                             headers=requestHeaders)
+                           
+async def zconnectRequest(connection, requestCommand, requestPath, requestBody,
+                         requestHeaders):
+  try:                         
+    return connection.request(requestCommand,
+                            requestPath,
+                            body=requestBody,
+                            headers=requestHeaders)
+  except:
+    return connection.request(requestCommand,
+                            requestPath)
 
 
 async def connectResponse(connection):
