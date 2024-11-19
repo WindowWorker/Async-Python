@@ -73,21 +73,22 @@ class handler(BaseHTTPRequestHandler):
         res.connection.close()
         return rtrn
       try:
-        print(len(request.headers.get('Bot-Protection',"")))
+        #print(len(request.headers.get('Bot-Protection',"")))
         if len(request.headers.get('Bot-Protection',"")) > 0:
           pass
         else:
-          #pass
+          pass
+          #raise ValueError("x cannot be negative") 
          # print('send_response')
-          await zsendResponse(request,200)
+          #await zsendResponse(request,200)
          # print('send_header')
-          request.send_header('Content-type', 'text/html')
+          #request.send_header('Content-type', 'text/html')
          # print('end_headers')
-          await zendHeaders(request)
+          #await zendHeaders(request)
          # print('wfile.write')
-          request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
+          #request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
          # print('return')
-          return rtrn
+          #return rtrn
       except:
         print("Here")
       hostFirst = str(at(globalThis.hostTargetList,[0]))
