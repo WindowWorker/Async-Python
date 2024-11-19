@@ -242,7 +242,7 @@ async def zfetchResponse(req, host):
     return res
   except:
     res = NewResponse()
-    NewResponse.status = 500
+    NewResponse.status = 269
     res.connection = connection
     return res
 
