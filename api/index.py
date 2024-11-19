@@ -11,9 +11,9 @@ from api.xhttp import *
 def globalThis():
   return
 
-globalThis.env = 'test'
+#globalThis.env = 'test'
 #if sys.version_info.minor >= 9:
-#globalThis.env = 'prod'
+globalThis.env = 'prod'
 
 globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive/Async-Python-Reverse-Proxy/main/static'
 #print(globalThis.env)
