@@ -112,7 +112,7 @@ class handler(BaseHTTPRequestHandler):
         hostFirst = str(at(globalThis.hostTargetList,[0]))
       request.path = str(stripHostParam(request.path))
       request.hostTarget = hostFirst
-      response = await fetchResponse(request, request.hostTarget)
+      response = await zfetchResponse(request, request.hostTarget)
       lastHost = hostFirst
       if hostFirst not in [
           'packaging.python.org', 'packaging-python-org.weblet.repl.co',
@@ -124,7 +124,7 @@ class handler(BaseHTTPRequestHandler):
             requestPath = str(request.path)
             request.path = bustCache(request.path)
             request.hostTarget = lastHost
-            response = await fetchResponse(request, request.hostTarget)
+            response = await zfetchResponse(request, request.hostTarget)
             request.path = requestPath
             if response.status < 200:
               break
@@ -137,13 +137,13 @@ class handler(BaseHTTPRequestHandler):
               requestPath = str(request.path)
               request.path = str(at(str(at(header,[1])).split(redirectHost),[1]))
               request.hostTarget = redirectHost
-              response = await fetchResponse(request, request.hostTarget)
+              response = await zfetchResponse(request, request.hostTarget)
               request.path = requestPath
               if response.status < 300:
                 break
           if response.status > 299:
             request.hostTarget = hostTarget
-            response = await fetchResponse(request, request.hostTarget)
+            response = await zfetchResponse(request, request.hostTarget)
       sendResponsePromise = await go(await promise(sendResponse,
                                                    [request, response.status]))
       headers = response.getheaders()
