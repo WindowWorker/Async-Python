@@ -7,14 +7,16 @@ from api.promises import *
 import sys, threading
 from api.excepts import *
 from api.xhttp import *
-
+from api.zfetch import *
+from api.z import *
+from api.zfile import *
 
 def globalThis():
   return
 
-globalThis.env = 'test'
-if sys.version_info.minor >= 9:
-  globalThis.env = 'prod'
+#globalThis.env = 'test'
+#if sys.version_info.minor >= 9:
+globalThis.env = 'prod'
 
 globalThis.staticPrefix = 'https://raw.githubusercontent.com/Patrick-ring-motive/Async-Python-Reverse-Proxy/main/static'
 #print(globalThis.env)
@@ -102,17 +104,16 @@ class handler(BaseHTTPRequestHandler):
           return rtrn
       except:
         print("Here")
-      hostFirst = globalThis.hostTargetList[0]
-      if (request.headers['Referer']):
-        referer = request.headers['Referer']
+      hostFirst = str(at(globalThis.hostTargetList,[0]))
+      if (at(request.headers,['Referer'])):
+        referer = str(at(request.headers,['Referer']))
         if ("hostname=" in referer):
-          hostFirst = referer.split("hostname=")[1].split('&')[0].split('#')[0]
+          hostFirst = str(at(str(at(str(at(str(referer).split("hostname="),[1])).split('&'),[0])).split('#'),[0]))
       if ("hostname=" in request.path):
-        hostFirst = request.path.split("hostname=")[1].split('&')[0].split(
-          '#')[0]
+        hostFirst = str(at(str(at(str(at(str(request.path).split("hostname="),[1])).split('&'),[0])).split('#'),[0]))
       if hostFirst == request.localhost:
-        hostFirst = globalThis.hostTargetList[0]
-      request.path = stripHostParam(request.path)
+        hostFirst = str(at(globalThis.hostTargetList,[0]))
+      request.path = str(stripHostParam(request.path))
       request.hostTarget = hostFirst
       response = await fetchResponse(request, request.hostTarget)
       lastHost = hostFirst
@@ -123,7 +124,7 @@ class handler(BaseHTTPRequestHandler):
       ]:
         for hostTarget in globalThis.hostTargetList:
           if response.status == 304:
-            requestPath = request.path
+            requestPath = str(request.path)
             request.path = bustCache(request.path)
             request.hostTarget = lastHost
             response = await fetchResponse(request, request.hostTarget)
@@ -134,10 +135,10 @@ class handler(BaseHTTPRequestHandler):
           if response.status < 300:
             break
           for header in response.getheaders():
-            if 'ocation' in header[0]:
-              redirectHost = header[1].split('/')[2]
-              requestPath = request.path
-              request.path = header[1].split(redirectHost)[1]
+            if 'ocation' in str(at(header,[0])):
+              redirectHost = str(at(str(at(header,[1])).split('/'),[2]))
+              requestPath = str(request.path)
+              request.path = str(at(str(at(header,[1])).split(redirectHost),[1]))
               request.hostTarget = redirectHost
               response = await fetchResponse(request, request.hostTarget)
               request.path = requestPath
@@ -159,24 +160,24 @@ class handler(BaseHTTPRequestHandler):
         if header[0] == 'Connection':
           continue
         if header[0] == 'Content-Type':
-          contentType = header[1]
+          contentType = str(at(header,[1]))
         if header[0] == 'Content-Encoding':
-          contentEncoding = header[1]
+          contentEncoding = str(at(header,[1]))
         if header[0] == 'Content-Length':
-          contentLength = int(header[1])
-        if 'ecurity' in header[0]:
+          contentLength = int(at(header,[1]))
+        if 'ecurity' in str(at(header,[0])):
           continue
-        if 'olicy' in header[0]:
+        if 'olicy' in str(at(header,[0])):
           continue
         try:
-          reheader=header[1].replace(request.hostTarget,request.localhost,1)
-          if header[0] == 'Location':
+          reheader=str(at(header,[1])).replace(request.hostTarget,request.localhost,1)
+          if at(header,[0]) == 'Location':
             char = '?'
             if('?' in reheader):
               char='&'
               if 'hostname=' not in reheader:
-                reheader=reheader.split('#')[0]+char+'hostname='+request.hostTarget
-          request.send_header(header[0],reheader)
+                reheader=str(at(reheader.split('#'),[0]))+char+'hostname='+str(request.hostTarget)
+          request.send_header(str(at(header,[0])),reheader)
         except:
           none()
       resBodyPromise = await go(await promise(readResponseBody,
