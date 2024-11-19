@@ -68,7 +68,7 @@ class handler(BaseHTTPRequestHandler):
         if globalThis.env == 'test':
           with open('static' + request.path.split('?')[0], 'r') as f:
             content = f.read()
-          request.send_response(200)
+          await zsendResponse(request,200)
           if '.js' in request.path:
             request.send_header('Content-type', 'text/javascript')
           request.end_headers()
@@ -76,10 +76,10 @@ class handler(BaseHTTPRequestHandler):
         else:
           res = await fetchURL(globalThis.staticPrefix + request.path)
           resBody = res.read()
-          request.send_response(200)
+          await zsendResponse(request,200)
           if '.js' in request.path:
             request.send_header('Content-type', 'text/javascript')
-          request.end_headers()
+          await zendHeaders(request)
           request.wfile.write(resBody)
           res.connection.close()
           return rtrn
@@ -90,11 +90,11 @@ class handler(BaseHTTPRequestHandler):
         else:
           #pass
          # print('send_response')
-          request.send_response(200)
+          await zsendResponse(request,200)
          # print('send_header')
           request.send_header('Content-type', 'text/html')
          # print('end_headers')
-          request.end_headers()
+          await zendHeaders(request)
          # print('wfile.write')
           request.wfile.write(bytes('<meta http-equiv="refresh" content="0; url=https://python.patrickring.net/"><script>location.replace("https://python.patrickring.net/");/script>', 'utf-8'))
          # print('return')
