@@ -7,8 +7,6 @@ from api.promises import *
 import sys, threading
 from api.excepts import *
 from api.xhttp import *
-from api.z import *
-from api.zfile import *
 
 def globalThis():
   return
