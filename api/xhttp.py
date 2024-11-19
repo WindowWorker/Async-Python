@@ -18,10 +18,20 @@ globalThis.blankResponse = None
 async def sendResponse(request, status):
   return request.send_response(status)
 
+async def zsendResponse(request, status):
+  try:
+    return request.send_response(status)
+  except:
+    pass
 
 async def endHeaders(request):
   return request.end_headers()
 
+async def zendHeaders(request):
+  try:
+    return request.end_headers()
+  except:
+    pass
 
 async def readResponseBody(res, length):
   try:
