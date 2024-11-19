@@ -1,7 +1,7 @@
 
-import('/boa.js');
-import('/get-prism.js');
-import('/favicon.js');
+import('https://git-tdn.typescripts.org/WindowWorker/Async-Python/refs/heads/main/static/boa.js');
+import('https://git-tdn.typescripts.org/WindowWorker/Async-Python/refs/heads/main/static/get-prism.js');
+import('https://git-tdn.typescripts.org/WindowWorker/Async-Python/refs/heads/main/static/favicon.js');
 setTimeout(function(){
   let serviceWorker = document.createElement('script');
   serviceWorker.src = '/sw.js';
