@@ -3,9 +3,7 @@ import http.client
 import asyncio
 import time
 import os
-from api.promises import *
 import sys, threading
-from api.excepts import *
 from api.xhttp import *
 
 def globalThis():
