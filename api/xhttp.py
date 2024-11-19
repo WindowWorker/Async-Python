@@ -6,6 +6,7 @@ import os
 from api.promises import *
 import sys, threading
 #from api.excepts import *
+from api.zfetch import *
 import copy
 
 def globalThis():
@@ -199,10 +200,7 @@ async def fetchURL(url):
     res.connection = connection
     return res
   except:
-    res = NewResponse()
-    NewResponse.status = 500
-    res.connection = connection
-    return res
+    return zfetch(url)
 
 def NewResponse():
     conn = http.client.HTTPSConnection('www.python.org')
