@@ -65,24 +65,15 @@ class handler(BaseHTTPRequestHandler):
           '/plugins/discourse-client-performance/javascripts/discourse-client-performance.js',
           '/wiki/common/js/common.js'
       ]):
-        if globalThis.env == 'test':
-          with open('static' + request.path.split('?')[0], 'r') as f:
-            content = f.read()
-          await zsendResponse(request,200)
-          if '.js' in request.path:
-            request.send_header('Content-type', 'text/javascript')
-          request.end_headers()
-          return await writeResponseBody(request, bytes(content, 'utf8'))
-        else:
-          res = await fetchURL(globalThis.staticPrefix + request.path)
-          resBody = res.read()
-          await zsendResponse(request,200)
-          if '.js' in request.path:
-            request.send_header('Content-type', 'text/javascript')
-          await zendHeaders(request)
-          request.wfile.write(resBody)
-          res.connection.close()
-          return rtrn
+        res = await fetchURL(globalThis.staticPrefix + request.path)
+        resBody = res.read()
+        await zsendResponse(request,200)
+        if '.js' in request.path:
+          request.send_header('Content-type', 'text/javascript')
+        await zendHeaders(request)
+        request.wfile.write(resBody)
+        res.connection.close()
+        return rtrn
       try:
         print(len(request.headers.get('Bot-Protection',"")))
         if len(request.headers.get('Bot-Protection',"")) > 0:
@@ -194,9 +185,6 @@ class handler(BaseHTTPRequestHandler):
       return await writeResponseBody(request, resBody)
     except:
       if hostFirst != 'packaging.python.org':
-        if request.isTimedOut == true:
-          if globalThis.env == 'test':
-            closeRequest(request)
         ct = 'text/html'
         code = 200
         writeEnd = b'408 /*<script src="/injects.js"></script><style hideme>html:has([hideme]){visibility:hidden;}</style>*/\x03\x04'
@@ -205,8 +193,6 @@ class handler(BaseHTTPRequestHandler):
           code = 200
           writeEnd = b'\x03\x04'
         if '.js' in request.path:
-          if globalThis.env == 'test':
-            return closeRequest(request)
           ct = 'text/javascript'
           code = 200
           writeEnd = b'\x03\x04'
@@ -214,9 +200,6 @@ class handler(BaseHTTPRequestHandler):
         request.send_header('Content-type', ct)
         await endHeaders(request)
         rtrn = await writeResponseBody(request, writeEnd)
-        if request.headers['Host'] in globalThis.hostShortCircuit:
-            if globalThis.env == 'test':
-              closeRequest(request)
     if hostFirst == 'packaging.python.org':
       request.wfile.flush()
       if globalThis.env == 'test':
